@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "148163652625",
+    "firebase_url": "https://noteappmap-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "noteappmap",
+    "storage_bucket": "noteappmap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148163652625:android:644ffa4eea93fd8d4655b0",
+        "android_client_info": {
+          "package_name": "com.example.alphanoteapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "148163652625-4guma3u3jreurllnp9knt7m97asemefh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVylwe7rfei5E5wFgR44OXRok6-DARKeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "148163652625-4guma3u3jreurllnp9knt7m97asemefh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
