@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'notetaking/ui/notemain.dart';
+import 'toDolist/toDoList.dart';
 import 'main.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -64,6 +65,11 @@ class SidebarWidget extends StatelessWidget {
             title: Text('To-do List'),
             onTap: () {
               // TODO: implement action for Option 2
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TodoList()),
+              );
             },
           ),
           ListTile(
