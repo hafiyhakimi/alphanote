@@ -1,5 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -11,9 +9,6 @@ class calendar_main extends StatefulWidget {
 }
 
 class _calendar_main extends State<calendar_main> {
-  final Future<FirebaseApp> _fApp = Firebase.initializeApp();
-  String realTimeValue = '0';
-  String getOnceValue = '0';
   DateTime today = DateTime.now();
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
@@ -31,15 +26,6 @@ class _calendar_main extends State<calendar_main> {
   }
 
   Widget content() {
-    DatabaseReference _testRef = FirebaseDatabase.instance.ref().child('count');
-    _testRef.onValue.listen(
-      (event) {
-        setState(() {
-          realTimeValue = event.snapshot.value.toString();
-        });
-      },
-    );
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -136,49 +122,6 @@ class _calendar_main extends State<calendar_main> {
         },
         backgroundColor: Colors.blueGrey,
         child: const Icon(Icons.add),
-      ),
-    );
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: Text("Real Time Counter : $realTimeValue",
-                  style: TextStyle(fontSize: 20))),
-          SizedBox(
-            height: 50,
-          ),
-          GestureDetector(
-            onTap: () async {
-              final snapshot = await _testRef.get();
-              if (snapshot.exists) {
-                setState(() {
-                  getOnceValue = snapshot.value.toString();
-                });
-              } else {
-                print("No Data Available");
-              }
-            },
-            child: Container(
-              height: 50,
-              width: 150,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(5)),
-              child: Center(
-                child: Text(
-                  "Get Once",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Center(
-              child: Text("Get Once Counter : $getOnceValue",
-                  style: TextStyle(fontSize: 20))),
-        ],
       ),
     );
   }

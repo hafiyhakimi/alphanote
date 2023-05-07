@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'calendar/calendar_main.dart';
+
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({Key? key}) : super(key: key);
 
@@ -65,7 +67,10 @@ class SidebarWidget extends StatelessWidget {
             leading: Icon(Icons.calendar_today),
             title: Text('Calendar'),
             onTap: () {
-              // TODO: implement action for Option 3
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  calendar_main()),
+              );
             },
           ),
           ListTile(
