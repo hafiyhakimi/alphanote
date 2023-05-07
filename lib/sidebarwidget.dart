@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'notetaking/ui/notemain.dart';
+import 'main.dart';
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({Key? key}) : super(key: key);
@@ -24,7 +26,7 @@ class SidebarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/profile.png'),
+                  backgroundImage: AssetImage('assets/pfp.jpeg'),
                   radius: 50,
                 ),
                 SizedBox(height: 10),
@@ -48,31 +50,45 @@ class SidebarWidget extends StatelessWidget {
           ),
           SizedBox(height: 10),
           ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Dashboard'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyApp()),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.check),
             title: Text('To-do List'),
             onTap: () {
-              // TODO: implement action for Option 1
+              // TODO: implement action for Option 2
             },
           ),
           ListTile(
             leading: Icon(Icons.note),
             title: Text('Notes'),
             onTap: () {
-              // TODO: implement action for Option 2
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NoteMain()),
+              );
             },
+
           ),
           ListTile(
             leading: Icon(Icons.calendar_today),
             title: Text('Calendar'),
             onTap: () {
-              // TODO: implement action for Option 3
+              // TODO: implement action for Option 4
             },
           ),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
             onTap: () {
-              // TODO: implement action for Option 4
+              // TODO: implement action for Option 5
             },
           ),
           Spacer(),
