@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'sidebarwidget.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'firebase_options.dart';
 
 void main() async {
+  // Ensure bindings are initialized before Firebase
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // Initialize Firebase app
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Firebase Realtime Database
+  final database = FirebaseDatabase.instance;
+  database.setPersistenceEnabled(true);
+  database.setPersistenceCacheSizeBytes(10000000);
+
   runApp(const MyApp());
 }
 
