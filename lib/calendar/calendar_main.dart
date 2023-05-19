@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 
 class calendar_main extends StatefulWidget {
   calendar_main({Key? key}) : super(key: key);
@@ -66,6 +67,7 @@ class _calendar_main extends State<calendar_main> {
                       children: <Widget>[
                         TextFormField(
 // controller: titleInput,
+
                           textInputAction: TextInputAction.next,
                           enableSuggestions: false,
                           autocorrect: false,
@@ -78,28 +80,27 @@ class _calendar_main extends State<calendar_main> {
                             }
                           },
                           decoration: InputDecoration(
+                              icon: const Icon(Icons.label),
                               hintStyle: TextStyle(color: Colors.grey[800]),
-                              hintText: "Event Title"),
+                              hintText: "Event Title"
+                          ),
                         ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 4,
-                              child: TextFormField(
-//controller: reminderNumber,
-                                keyboardType: TextInputType.number,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.notification_add),
-                                  labelText: "Reminder Time",
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                        DateTimePicker(
+                          type: DateTimePickerType.dateTime,
+                          icon: const Icon(Icons.event),
+                          dateMask: 'dd-MM-yyyy AT HH:mm',
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(9999),
+                          dateLabelText: 'Starting Date and Time',
+                        ),
+                        DateTimePicker(
+                          type: DateTimePickerType.dateTime,
+                          dateMask: 'dd-MM-yyyy AT HH:mm',
+                          icon: const Icon(Icons.event),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(9999),
+                          dateLabelText: 'End Date and Time',
+                        ),
                       ],
                     ),
                   ),
