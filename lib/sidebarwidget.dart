@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notetaking/ui/notemain.dart';
 import 'toDolist/toDoList.dart';
+import 'calendar/calendar_main.dart';
 import 'main.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -88,6 +89,11 @@ class SidebarWidget extends StatelessWidget {
             title: Text('Calendar'),
             onTap: () {
               // TODO: implement action for Option 4
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => calendar_main()),
+              );
             },
           ),
           ListTile(
