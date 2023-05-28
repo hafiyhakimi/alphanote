@@ -40,8 +40,15 @@ class NoteMain extends StatelessWidget {
             final data = (eventSnapshot.snapshot.value as Map<dynamic, dynamic>)
                 .cast<String, dynamic>();
             data.forEach((key, value) {
-              final note = NoteItem.fromMap(value as Map<String, dynamic>);
-              NoteItem updatedNote = note.copyWith(id: key);
+              final note = NoteItem(
+                id: key.toString(),
+                title: value?['title'] ?? '',
+                content: value?['content'] ?? '',
+                lastUpdated: value?['lastUpdated'] ?? '',
+                snapshot: eventSnapshot.snapshot,
+                onTap: () {},
+                userId: value?['userId'] ?? '',
+              );
               notes.add(note);
             });
           }
