@@ -17,35 +17,67 @@ class NoteProvider extends ChangeNotifier {
 
   List<NoteItem> get notes => _notes;
 
+  // Future<List<NoteItem>> fetchNotes() async {
+  //   final User? user = _auth.currentUser;
+  //   if (user == null) {
+  //     return [];
+  //   }
+
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   final dataSnapshot = await FirebaseDatabase.instance
+  //       .reference()
+  //       .child('notes')
+  //       .orderByChild('userId')
+  //       .equalTo(user.uid)
+  //       .once();
+
+  //   final notes = dataSnapshot.value != null
+  //       ? (dataSnapshot.value as Map<dynamic, dynamic>).entries
+  //           .map((entry) {
+  //             return NoteItem.fromMap(
+  //                 Map<String, dynamic>.from(entry.value));
+  //           })
+  //           .toList()
+  //       : [];
+
+  //   _isLoading = false;
+  //   _notes = notes;
+  //   notifyListeners();
+
+  //   return notes;
+  // }
+
   Future<List<NoteItem>> fetchNotes() async {
-  final User? user = _auth.currentUser;
-  if (user == null) {
-    return [];
+    final User? user = _auth.currentUser;
+    if (user == null) {
+      return [];
+    }
+
+    _isLoading = true;
+    notifyListeners();
+
+    final dataSnapshot = await FirebaseDatabase.instance
+        .reference()
+        .child('notes')
+        .orderByChild('userId')
+        .equalTo(user.uid)
+        .once();
+
+    final notes = (dataSnapshot.snapshot.value as Map<dynamic, dynamic>)
+        .entries
+        .map((entry) {
+      return NoteItem.fromMap(
+          Map<String, dynamic>.from(entry.value));
+    }).toList();
+
+    _isLoading = false;
+    _notes = notes;
+    notifyListeners();
+
+    return notes;
   }
-
-  _isLoading = true;
-  notifyListeners();
-
-  final dataSnapshot = await FirebaseDatabase.instance
-      .reference()
-      .child('notes')
-      .orderByChild('userId')
-      .equalTo(user.uid)
-      .once();
-
-  final notes = (dataSnapshot.snapshot.value as Map<dynamic, dynamic>)
-      .entries
-      .map((entry) {
-    return NoteItem.fromMap(
-        Map<String, dynamic>.from(entry.value));
-  }).toList();
-
-  _isLoading = false;
-  _notes = notes;
-  notifyListeners();
-
-  return notes;
-}
 
 
   Future<void> addNote(NoteItem note) async {
