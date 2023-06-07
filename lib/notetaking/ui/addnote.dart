@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddNote extends StatefulWidget {
   @override
@@ -55,18 +57,27 @@ class _AddNoteState extends State<AddNote> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    FirebaseDatabase.instance.reference().child('notes').push().set({
-                      'title': _titleController.text,
-                      'content': _contentController.text,
-                      'lastUpdated': DateTime.now().toString(),
-                    }).then((value) {
-                      Navigator.pop(context);
-                    });
-
+                    final user = FirebaseAuth.instance.currentUser;
+                    String id = DateTime.now().toString(); // Generate ID based on current datetime
+                    FirebaseFirestore.instance
+                        .collection('notes')
+                        .doc(user!.uid) // Save the note under the user's ID
+                        .collection('user_notes')
+                        .add({
+                          'id': id,
+                          'userId': user.uid,
+                          'title': _titleController.text,
+                          'content': _contentController.text,
+                          'lastUpdated': DateTime.now(),
+                        })
+                        .then((value) {
+                          Navigator.pop(context);
+                        });
                   }
                 },
                 child: Text('Save'),
               ),
+
             ],
           ),
         ),

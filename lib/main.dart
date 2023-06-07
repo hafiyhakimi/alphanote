@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
-import 'sidebarwidget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'notetaking/ui/notemain.dart';
+import 'authprovider.dart';
+import 'errorpage.dart';
+import 'signin.dart';
+import 'sidebarwidget.dart';
+import 'todolist/toDoList.dart';
+
+final storage = FlutterSecureStorage();
 
 void main() async {
   // Ensure bindings are initialized before Firebase
@@ -15,12 +25,22 @@ void main() async {
   database.setPersistenceEnabled(true);
   database.setPersistenceCacheSizeBytes(10000000);
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider(
+          auth: FirebaseAuth.instance,
+          emailController: TextEditingController(),
+          passwordController: TextEditingController(),
+          rememberMeValue: false,
+        ),),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +48,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          if (authProvider.user == null) {
+            return SignInPage();
+          } else {
+            return MyHomePage();
+          }
+        },
+      ),
     );
   }
 }
@@ -41,43 +69,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> _notes = [    'Buy groceries',    'Schedule dentist appointment',    'Pick up dry cleaning',  ];
+  @override
+  void initState() {
+    super.initState();
+    // Listen for changes to the authentication state
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) {
+        // The user is signed in, so update the AuthProvider with the user object
+        Provider.of<AuthProvider>(context, listen: false).setUser(user);
+      } else {
+        // The user is signed out, so clear the AuthProvider's user object
+        Provider.of<AuthProvider>(context, listen: false).clearUser();
+      }
+    });
+  }
 
-  void _addNote() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String noteText = '';
+  void _navigateToNotes(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NoteMain()),
+    );
+  }
 
-        return AlertDialog(
-          title: const Text('Add a note'),
-          content: TextField(
-            autofocus: true,
-            decoration: const InputDecoration(hintText: 'Enter note text'),
-            onChanged: (value) {
-              noteText = value;
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _notes.add(noteText);
-                });
-
-                Navigator.pop(context);
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
+  void _navigateToTodoList(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TodoList()),
     );
   }
 
@@ -87,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Alpha Notes'),
       ),
-      drawer: const SidebarWidget(),
+      drawer: SidebarWidget(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,47 +122,77 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
               children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Notes',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                GestureDetector(
+                  onTap: () {
+                    _navigateToNotes(context);
+                  },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.note,
+                            size: 40,
+                            color: Colors.blue,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          '${_notes.length} notes',
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Notes',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'View and manage your notes',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Tags',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                GestureDetector(
+                  onTap: () {
+                    _navigateToTodoList(context);
+                  },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.check_box,
+                            size: 40,
+                            color: Colors.green,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'No tags yet',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          const Text(
+                            'To-Do List',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'View and manage your to-do list',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -153,11 +200,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNote,
-        tooltip: 'Add Note',
-        child: const Icon(Icons.add),
       ),
     );
   }

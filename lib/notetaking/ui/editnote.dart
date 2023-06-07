@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../backend/noteitem.dart';
+import 'notemain.dart';
 
 class EditNote extends StatefulWidget {
   final NoteItem note;
@@ -20,7 +20,7 @@ class _EditNoteState extends State<EditNote> {
   late String _content;
 
   final _firebaseAuth = FirebaseAuth.instance;
-  final _firebaseDatabase = FirebaseDatabase.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -30,28 +30,42 @@ class _EditNoteState extends State<EditNote> {
   }
 
   Future<void> _updateNote() async {
-  final currentUser = _firebaseAuth.currentUser;
-  final key = widget.note.snapshot?.key;
+    final currentUser = _firebaseAuth.currentUser;
+    final noteRef = _firestore.collection('notes').doc(currentUser?.uid).collection('user_notes').doc(widget.note.id);
 
-  if (currentUser != null && key != null) {
+    if (currentUser != null) {
       try {
-        await FirebaseDatabase.instance
-            .reference()
-            .child('notes')
-            .child(key)
-            .update({
-              'title': _title,
-              'content': _content,
-              'updatedAt': ServerValue.timestamp,
-            });
-        Navigator.pop(context);
+        await noteRef.update({
+          'title': _title,
+          'content': _content,
+          'lastUpdated': DateTime.now(), // Update the 'lastUpdated' field
+        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NoteMain()),
+        );
       } catch (e) {
         print('Failed to update note: $e');
       }
-
+    }
   }
-}
 
+  Future<void> _deleteNote() async {
+    final currentUser = _firebaseAuth.currentUser;
+    final noteRef = _firestore.collection('notes').doc(currentUser?.uid).collection('user_notes').doc(widget.note.id);
+
+    if (currentUser != null) {
+      try {
+        await noteRef.delete();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NoteMain()),
+        );
+      } catch (e) {
+        print('Failed to delete note: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,24 +85,8 @@ class _EditNoteState extends State<EditNote> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              if (widget.note.snapshot?.key != null) {
-                _firebaseDatabase
-                  .reference()
-                  .child('notes')
-                  .child(widget.note.snapshot!.key!)
-                  .remove()
-                  .then((_) {
-                    Navigator.pop(context);
-                  })
-                  .catchError((error) {
-                    print("Failed to delete note: $error");
-                  });
-              } else {
-                print('Failed to delete note: snapshot key is null');
-              }
+              _deleteNote();
             },
-
-
           ),
         ],
       ),
