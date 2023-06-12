@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:todo_app/pages/completed_todos.dart';
-// import 'package:todo_app/pages/deleted_todos.dart';
-// import 'package:flutter_project_1/toDoList/pages/todos.dart';
+
+import 'package:alphanoteapp/toDoList/pages/completed_todos.dart';
+import 'package:alphanoteapp/toDoList/pages/deleted_todos.dart';
+import 'package:alphanoteapp/toDoList/pages/todos.dart';
+
+import 'package:alphanoteapp/sidebarwidget.dart';
 
 class Body extends StatelessWidget {
   const Body({super.key});
@@ -33,8 +36,11 @@ class Body extends StatelessWidget {
           ],
         ),
       ),
-      // body: const TabBarView(
-      //     children: [TodosPage()]),
+
+      drawer: const SidebarWidget(),
+
+      body: const TabBarView(
+          children: [TodosPage(), CompletedTodosPage(), DeletedTodosPage()]),
     );
   }
 }
