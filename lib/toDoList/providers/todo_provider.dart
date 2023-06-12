@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'package:alphanoteapp/toDoList/models/todo.dart';
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TodoProvider extends ChangeNotifier {
-  // String currentDate = DateFormat.yMMMd().format(DateTime.now());
+  String currentDate = DateFormat.yMMMd().format(DateTime.now());
   List<String> categories = ["Urgent", "Important", "Not Important"];
 
   //test data
@@ -52,4 +54,50 @@ class TodoProvider extends ChangeNotifier {
         category: "Important"),
   ];
 
+  List<Todo> get deletedTodos {
+    return allTodos.where((element) => element.toBeDeleted).toList();
+  }
+
+  List<Todo> get completedTodos {
+    return allTodos
+        .where((element) => element.isComplete && !element.toBeDeleted)
+        .toList();
+  }
+
+  void addTodo(String title, String description, String date, String time, String category) {
+    allTodos.add(Todo(
+      title: title,
+      date: date,
+      description: description,
+      time: time,
+      category: category));
+    notifyListeners();
+  }
+
+  void toggleToBeDeleted(Todo todo) {
+    todo.toBeDeleted = !todo.toBeDeleted;
+    notifyListeners();
+  }
+
+  void toggleIsComplete(Todo todo) {
+    todo.isComplete = !todo.isComplete;
+    notifyListeners();
+  }
+
+  List<Todo> getSearchResults(String task) {
+    return allTodos
+        .where((element) =>
+            RegExp(task, caseSensitive: false).hasMatch(element.title))
+        .toList();
+  }
+
+  void addCategory(String category) {
+    categories.add(category);
+    notifyListeners();
+  }
+
+  void removeCategory(String category) {
+    categories.remove(category);
+    notifyListeners();
+  }
 }
