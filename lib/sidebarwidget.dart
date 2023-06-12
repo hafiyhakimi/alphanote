@@ -129,7 +129,7 @@ import 'toDolist/toDoList.dart';
 import 'main.dart';
 import 'notetaking/ui/notemain2.dart';
 import 'authprovider.dart';
-import 'calendar/calendar_main.dart';
+import 'calendar/ui/calendar_main.dart';
 
 class SidebarWidget extends StatelessWidget {
   @override
