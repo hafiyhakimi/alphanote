@@ -37,7 +37,7 @@ class Body extends StatelessWidget {
         ),
       ),
 
-      drawer: const SidebarWidget(),
+      drawer: SidebarWidget(),
 
       body: const TabBarView(
           children: [TodosPage(), CompletedTodosPage(), DeletedTodosPage()]),

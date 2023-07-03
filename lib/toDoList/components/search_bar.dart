@@ -3,14 +3,14 @@ import 'package:line_icons/line_icons.dart';
 
 import 'package:alphanoteapp/toDoList/pages/search_results.dart';
 
-class SearchBar extends StatefulWidget {
-  const SearchBar({super.key});
+class SearchBarNew extends StatefulWidget {
+  const SearchBarNew({super.key});
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<SearchBarNew> createState() => _SearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBarState extends State<SearchBarNew> {
   TextEditingController controller = TextEditingController();
 
   @override
