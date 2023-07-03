@@ -26,7 +26,7 @@ class TodosPage extends StatelessWidget {
         padding: const EdgeInsets.all(30),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Expanded(child: SearchBar()),
+            const Expanded(child: SearchBarNew()),
             IconButton(
               onPressed: () {},
               icon: const Icon(LineIcons.horizontalSliders,color: Colors.black,),
