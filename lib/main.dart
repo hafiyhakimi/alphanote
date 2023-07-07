@@ -11,6 +11,9 @@ import 'errorpage.dart';
 import 'signin.dart';
 import 'sidebarwidget.dart';
 import 'todolist/toDoList.dart';
+import 'todolist/providers/todo_provider.dart';
+import 'package:dcdg/dcdg.dart';
+
 
 final storage = FlutterSecureStorage();
 
@@ -28,12 +31,14 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(
-          auth: FirebaseAuth.instance,
-          emailController: TextEditingController(),
-          passwordController: TextEditingController(),
-          rememberMeValue: false,
-        ),),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(
+            auth: FirebaseAuth.instance,
+            emailController: TextEditingController(),
+            passwordController: TextEditingController(),
+            rememberMeValue: false,
+          ),
+        ),
       ],
       child: MyApp(),
     ),
@@ -93,9 +98,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _navigateToTodoList(BuildContext context) {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => TodoList()),
+    // );
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TodoList()),
+      MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+              create: (context) => TodoProvider(),
+              builder: (context, child) => const TodoList())),
     );
   }
 
