@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,45 +14,63 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login Page'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
+      backgroundColor: FlutterFlowTheme.secondaryBackground,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 24),
+                child: Text(
+                  'Login',
+                  style: FlutterFlowTheme.of(context).headline1.copyWith(
+                    color: FlutterFlowTheme.primaryText,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              child: Text('Login'),
-              onPressed: () {
-                _login();
-              },
-            ),
-          ],
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 24.0),
+              FFButtonWidget(
+                onPressed: () {
+                  _login();
+                },
+                text: 'Login',
+                options: FFButtonOptions(
+                  width: double.infinity,
+                  height: 50,
+                  color: FlutterFlowTheme.primary,
+                  textStyle: FlutterFlowTheme.subtitle2.override(
+                    fontFamily: 'Lexend',
+                    color: FlutterFlowTheme.textColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  borderSide: BorderSide.none,
+                  elevation: 0,
+                  borderRadius: 8,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -72,15 +92,11 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // Successful login
-      // Navigate to the next screen or perform desired actions.
+      // You can perform desired actions, such as navigating to the home page or displaying a success message.
     } catch (e) {
       // Failed login
       // Display an error message or show a snackbar indicating login failure
       print('Login failed: $e');
-      // Display an error message on the screen or show a snackbar
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Login failed: $e')),
-      // );
     }
   }
 }
